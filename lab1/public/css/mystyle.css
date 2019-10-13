@@ -1,0 +1,98 @@
+table {
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+td, th {
+    border: 1px solid black;
+    width: 80px;
+    text-align: center;
+    padding: 20px;
+}
+
+.linux {
+    background-color: rgba(253, 236, 1, 0.973);
+}
+
+.multimedia {
+    background-color: greenyellow;
+}
+
+.professionalPractice {
+    background-color: rgb(132, 230, 132);
+}
+
+.web2 {
+    background-color: yellow;
+}
+
+.daysTime{
+    background-color: rgba(199, 199, 184, 0.925);
+    font-weight: bold;
+}
+
+.navigation{
+    background: rgb(129, 197, 160);
+    padding:10px 10px;
+    text-align: center
+}
+nav a{
+    color: white;
+    text-decoration: none;
+    margin: 0px 5px;
+}
+
+nav a.active{
+    color: red;
+}
+
+.image-container img{
+    border-color: chocolate;
+    border-width: 2px 2px 20px 2px;
+    border-radius: 5px;
+    border-style: solid; 
+    margin-left: 50px;
+}
+
+.image-container{
+    text-align: center;
+}
+
+.image-container div{
+    display:inline-block;
+}
+
+.image-container h5{
+    color: chocolate;
+    font-weight: normal;
+    font-style: italic;
+}
+
+h2{
+    font-style: italic;
+    text-align: center;
+}
+
+.image-home{
+    width: 60%;
+    float: left;
+    height: 100%;
+}
+.text-home{
+    width: 40%;
+    float: right;
+    height: 100%;
+    
+    text-align: center;
+    
+  }
+.text-home ul{
+    margin-left: 10%;
+    text-align: left;
+}
+
+.dino{
+    width:50px;
+    height: 50px;
+}

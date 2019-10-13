@@ -1,0 +1,117 @@
+.countries1-image img {
+    width: 200px;
+    height: 125px;
+    border-width: 1px;
+    border-radius: 3px;
+    border-style: solid;
+    margin: auto;
+    display: block;
+}
+
+body {
+    background: linear-gradient(to bottom, rgba(140, 122, 122, 1) 0%, rgba(175, 135, 124, 1) 65%, rgba(175, 135, 124, 1) 100%) fixed;
+    background: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/coc-background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font: 14px/20px "Lato", Arial, sans-serif;
+    color: #9E9E9E;
+    margin-top: 30px;
+}
+
+.space_div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.card img {
+    width: 12rem;
+    height: 8rem;
+    background: #2f2f31;
+}
+
+.cardPlayer img {
+    width: 18rem;
+    height: 18rem;
+    background: #2f2f31;
+}
+
+.ribbon1 {
+    position: absolute;
+    top: -6.1px;
+    right: 10px;
+}
+
+.ribbon1:after {
+    position: absolute;
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 53px solid transparent;
+    border-right: 53px solid transparent;
+    border-top: 10px solid #F8463F;
+}
+
+.ribbon1 span {
+    position: relative;
+    display: block;
+    text-align: center;
+    background: #F8463F;
+    color: white;
+    font-size: 11px;
+    line-height: 1;
+    padding: 12px 8px 10px;
+    border-top-right-radius: 8px;
+    width: 90px;
+}
+
+.ribbon1 span:before,
+.ribbon1 span:after {
+    position: absolute;
+    content: "";
+}
+
+.ribbon1 span:before {
+    height: 6px;
+    width: 6px;
+    left: -6px;
+    top: 0;
+    background: #F8463F;
+}
+
+.ribbon1 span:after {
+    height: 6px;
+    width: 8px;
+    left: -8px;
+    top: 0;
+    border-radius: 8px 8px 0 0;
+    background: #C02031;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.bg-img {
+    background: url(cup.jpg) no-repeat center center fixed;
+    background-size: 50% 50%;
+}
+
+.homeImg {
+    border-radius: 40px;
+}
+
+.mainContent {
+    padding-top: 25px;
+    font-size: 18px;
+}
+
+.mainContentColor {
+    color: #ffffff9e;
+}
+
+.searchColor {
+    color: #ffffff9e;
+}
+
+nav a.active{
+    color: #ff0000;
+}
