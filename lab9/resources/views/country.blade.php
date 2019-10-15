@@ -3,22 +3,22 @@
 @section('country','active')
 @section('content')
 <div class="container">
-    <button type="button" class="btn btn-primary ml-3 mt-5 mb-5" id="addCountry">
+    <button type="button" class="btn btn-primary ml-3 mt-2 mb-2" id="addCountry">
         Add New Country
     </button>
     <div class="container-fluid col-md-12">
         <div class="row">
-            @foreach($countries as $country)
+            @foreach($countries->sortBy('name') as $country)
             <div class="col-md-6 col-lg-3 space_div">
                 <div class="card border-0 m-1 br-5" style="width: 12rem;">
-                    <img class="card-img-top" src="{{'storage/'.$country->flag}}" alt="{{$country->name}}">
+                    <img class="card-img-top" src="{{asset('storage/'. $country->flag)}}" alt="{{$country->name}}">
                     <div class="card-body">
-                        <h6 class="card-title text-center text-dark">{{$loop->iteration}} . {{$country->name}} </h6>
+                        <h6 class="card-title text-center text-dark">{{$loop->iteration}}. {{$country->name}} </h6>
                         <hr>
                         <div class="text-center">
                             <button type="button" data-id="{{$country->id}}" class="btn btn-sm btn-warning editCountry" data-name="{{$country->name}}" data-flag="{{$country->flag}}">Edit</button>
                             @if(sizeof($country->players)==0)
-                                <button data-id="{{$country->id}}" class="btn btn-sm btn-danger deleteCountry" data-id="{{$country->id}}" data-name="{{$country->name}}">Delete</button>
+                            <button data-id="{{$country->id}}" class="btn btn-sm btn-danger deleteCountry" data-id="{{$country->id}}" data-name="{{$country->name}}">Delete</button>
                             @endif
                         </div>
                     </div>
@@ -34,7 +34,7 @@
     <div class="modal show" id="countryModal" tabindex="-1" role="dialog" aria-labelledby="countryModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form method="POST" action="/countries" enctype="multipart/form-data" id="countryForm">
+                <form method="POST" action="/countries" enctype="multipart/form-data" id="countryForm" onsubmit="actionChange()">
                     {{csrf_field()}}
                     <div id="route">
                         {{method_field('PATCH')}}
@@ -52,8 +52,8 @@
                             <input class="form-control" type="text" name="name" />
                         </div>
                         <div class="form-group">
-                            <label>Flag image</label><br/>
-                            <img class="card-img-top" src="images_will_be_replaced_by_js" name="flagName" alt="" id="countryImage" style="width: 12rem;">
+                            <label>Flag image</label><br />
+                            <img class="card-img-top" src="images_will_be_replaced_by_js" name="flagName" alt="" id="countryImage" style="width: 10rem; height: auto;">
                             <input type="file" class="form-control-file" name="flag" id="countryImageInputFile" />
 
 

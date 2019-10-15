@@ -30,7 +30,7 @@ body {
 
 .cardPlayer img {
     width: 18rem;
-    height: 18rem;
+    height: 16rem;
     background: #2f2f31;
 }
 
@@ -97,10 +97,11 @@ body {
 
 .homeImg {
     border-radius: 40px;
+    height: 400px;
 }
 
 .mainContent {
-    padding-top: 25px;
+    padding-top: 15px;
     font-size: 18px;
 }
 
@@ -114,4 +115,8 @@ body {
 
 nav a.active{
     color: #ff0000;
+}
+
+.cardPlayer ul li{
+    line-height: 8px;
 }

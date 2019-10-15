@@ -18,39 +18,32 @@
 </head>
 
 <body>
-    <div class="">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="navbar-header">
-                    <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-dark bg-dark">
-                        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                            <ul class="navbar-nav">
-                                <li class="nav-item">
-                                    <a class="nav-link @yield('home')" href="/">Home</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link @yield('country')" href="/countries">Country</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link @yield('player')" href="/players">Player</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/search">Search</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </nav>
-                </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="navbar-header">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-dark bg-dark">
+                    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link @yield('home')" href="{{asset('/')}}">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @yield('country')" href="{{asset('/countries')}}">Country</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @yield('player')" href="{{asset('/players')}}">Player</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
             </div>
         </div>
-
-        <div class="container">
-            @yield('content')
-        </div>
-
+    </div>
+    <div class="row">
+        @yield('content')
     </div>
 </body>
 

@@ -4,14 +4,12 @@
 @section('content')
 
 <div class="container mainContent mainContentColor">
-    <h4 class="text-center">Cricket World Cup Committee</h4>
-    <br>
+    <h4 class="text-center mb-3">Cricket World Cup Committee</h4>
     <div class="text-center">
-        <img class="img-responsive bg-img homeImg" src="/css/cup.jpg" alt="Home" />
+        <img class="img-responsive bg-img homeImg" src="{{asset('/css/cup.jpg')}}" alt="Home" />
     </div>
-    <br>
-    <div>
-        <p class="text-center">
+    <div class="text-center mt-3">
+        <p>
             This application allows the cricket committee to keep records of all the players and their countries.
         </p>
     </div>

@@ -176,3 +176,9 @@ function readURL(input, image) {
         reader.readAsDataURL(input.files[0]);
     }
 }
+
+function actionChange(){
+    var action_src = "{{url('/countries/')}}" + $(this).data('id');
+    $('#countryForm').action = action_src;
+    console.log('changed');
+}

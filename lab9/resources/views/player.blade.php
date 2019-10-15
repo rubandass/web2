@@ -4,49 +4,51 @@
 @section('content')
 <div class="container">
     <div>
-        <button type="button" class="btn btn-primary ml-3 mt-5 mb-5" id="addPlayer">
+        <button type="button" class="btn btn-primary ml-3 mt-2 mb-1" id="addPlayer">
             Add New Player
         </button>
-        <button type="button" class="btn btn-primary ml-3 mt-5 mb-5" id="searchPlayer">
-        <span class="glyphicon glyphicon-search"></span> Search
+        <button type="button" class="btn btn-primary ml-3 mt-2 mb-1" id="searchPlayer">
+            <span class="glyphicon glyphicon-search"></span> Search
         </button>
     </div>
     <div class="container-fluid col-md-12">
         <div class="row">
             <!-- Looping around the player and display as card-->
-
             @if(sizeof($players) == 0)
-            <p>Records not found</p>
-
+                <p>Records not found</p>
             @else
-            @foreach($players as $player)
-            <div class="col-md-6 col-lg-4 space_div">
-                <div class="card cardPlayer border-0 br-5" style="width: 18rem;">
-                    <div class="ribbon">
-                        <span class="ribbon1">
-                            <span>{{$player->country->name}}</span>
-                        </span>
-                    </div>
-                    <img class="card-img-top" src="{{'storage/'.$player->image}}" alt="{{$player->name}}">
-                    <div class="card-body">
-                        <h5 class="card-title text-center text-dark">{{$player->name}} ({{$player->age}})<br /></h5>
-                        <div class="row">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item"><b>Role:</b> {{$player->role}}</li>
-                                <li class="list-group-item"><b>Batting:</b> {{$player->batting}}</li>
-                                <li class="list-group-item"><b>Bowling:</b> {{$player->bowling}}</li>
-                                <li class="list-group-item"><b>ODI Runs:</b> {{$player->odiRuns}}</li>
-                                <li class="list-group-item text-center">
-                                    <button type="button" class="btn btn-sm btn-warning editPlayer" data-id="{{$player->id}}" data-name="{{$player->name}}" data-age="{{$player->age}}" data-role="{{$player->role}}" data-batting="{{$player->batting}}" data-bowling="{{$player->bowling}}" data-image="{{$player->image}}" data-odi_runs="{{$player->odiRuns}}" data-country_id="{{$player->country->id}}">Edit
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-danger deletePlayer" data-id="{{$player->id}}" data-name="{{$player->name}}">Delete
-                                    </button>
-                                </li>
-                            </ul>
+            @foreach($countries as $country)
+                @foreach($players as $player)
+                    @if($player->country == $country)
+                    <div class="col-md-6 col-lg-4 space_div">
+                        <div class="card cardPlayer border-0 br-5" style="width: 18rem;">
+                            <div class="ribbon">
+                                <span class="ribbon1">
+                                    <span>{{$player->country->name}}</span>
+                                </span>
+                            </div>
+                            <img class="card-img-top" src="{{'storage/'.$player->image}}" alt="{{$player->name}}">
+                            <div class="card-body">
+                                <h5 class="card-title text-center text-dark">{{$player->name}} ({{$player->age}})<br /></h5>
+                                <div class="row">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item"><b>Role:</b> {{$player->role}}</li>
+                                        <li class="list-group-item"><b>Batting:</b> {{$player->batting}}</li>
+                                        <li class="list-group-item"><b>Bowling:</b> {{$player->bowling}}</li>
+                                        <li class="list-group-item"><b>ODI Runs:</b> {{$player->odiRuns}}</li>
+                                        <li class="list-group-item text-center">
+                                            <button type="button" class="btn btn-sm btn-warning editPlayer" data-id="{{$player->id}}" data-name="{{$player->name}}" data-age="{{$player->age}}" data-role="{{$player->role}}" data-batting="{{$player->batting}}" data-bowling="{{$player->bowling}}" data-image="{{$player->image}}" data-odi_runs="{{$player->odiRuns}}" data-country_id="{{$player->country->id}}">Edit
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger deletePlayer" data-id="{{$player->id}}" data-name="{{$player->name}}">Delete
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                    @endif
+                @endforeach
             @endforeach
             @endif
         </div>
@@ -83,7 +85,7 @@
                                 <select class="form-control form-control-sm" name="country_id">
                                     <option selected value="">Select Country</option>
                                     <!--  Looping around the players country-->
-                                    @foreach ($countries as $country)
+                                    @foreach ($countries->sortBy('name') as $country)
                                     <option value="{{$country->id}}">{{$country->name}}</option>
                                     @endforeach
                                 </select>
@@ -118,7 +120,7 @@
 
                         <div class="form-group row">
                             <label class="col-md-3">Image</label>
-                            <img class="card-img-top ml-5" src="images_will_be_replaced_by_js" alt="" id="playerImage" style="width: 12rem;">
+                            <img class="card-img-top ml-5" src="images_will_be_replaced_by_js" alt="" id="playerImage" style="width: 8rem; height: 8rem;">
                             <input type="file" class="form-control-file col-md-8" name="image" id="playerImageInputFile" accept="image/png, image/jpeg" />
                         </div>
                     </div>
@@ -165,8 +167,7 @@
     <div class="modal fade" id="playerSearchModal" tabindex="-1" role="dialog" aria-labelledby="playerSearchModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <form method="POST" action="/search" id="playerSearchForm">
-                    {{csrf_field()}}
+                <form method="GET" action="/players" id="playerSearchForm">
                     <div class="modal-header">
                         <h5 class="modal-title" id="playerSearchModalLabel">Search Player</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -184,7 +185,7 @@
                                 <select class="form-control form-control-sm" name="country_id">
                                     <option selected value="">Select Country</option>
                                     <!--  Looping around the players country-->
-                                    @foreach ($countries as $country)
+                                    @foreach ($countries->sortBy('name') as $country)
                                     <option value="{{$country->id}}">{{$country->name}}</option>
                                     @endforeach
                                 </select>

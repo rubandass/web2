@@ -22,6 +22,4 @@ Route::get('/country', 'PageController@country');*/
 Route::get('/', 'HomeController@home');
 Route::resource('/countries', 'CountryController');
 Route::resource('/players', 'PlayerController');
-Route::post('/search', 'PlayerController@search');
-//Route::get('/search', 'HomeController@search');
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use App\Country;
 use Illuminate\Http\Request;
 use App\Player;
@@ -13,10 +14,40 @@ class PlayerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $players = Player::all();
-        $countries = Country::all();
+        //Getting all the values from the Player object
+        $query = Player::query();
+        //Getting all form values as key => value pair into an array.
+        $conditions = collect([]);
+        $conditions->push($request->only(['name', 'age', 'role', 'batting', 'bowling', 'odi_runs', 'country_id']));
+        //Checking all the fields are not null and search from the Player object according to the conditions
+        //This check is for whether the $request contains values or not. (Search -> No values, players -> values)
+        if (sizeof($conditions[0]) > 0) {
+            if ($conditions[0]["name"] != null) {
+                $query = $query->where('name', 'like', '%' . $conditions[0]["name"] . '%');
+            }
+            if ($conditions[0]["age"] != null) {
+                $query = $query->where('age', $conditions[0]["age"]);
+            }
+            if ($conditions[0]["role"] != null) {
+                $query = $query->where('role', $conditions[0]["role"]);
+            }
+            if ($conditions[0]["batting"] != null) {
+                $query = $query->where('batting', $conditions[0]["batting"]);
+            }
+            if ($conditions[0]["bowling"] != null) {
+                $query = $query->where('bowling', $conditions[0]["bowling"]);
+            }
+            if ($conditions[0]["odi_runs"] != null) {
+                $query = $query->where('odiRuns', $conditions[0]["odi_runs"]);
+            }
+            if ($conditions[0]["country_id"] != null) {
+                $query = $query->where('country_id', $conditions[0]["country_id"]);
+            }
+        }
+        $players = $query->get()->sortBy('name');
+        $countries = Country::all()->sortBy('name');
         return view('player', compact('players', 'countries'));
     }
 
@@ -34,11 +65,11 @@ class PlayerController extends Controller
     public function store(Request $request)
     {
         $validatedData = Validator::make($request->all(), [
-            'name' => 'required|regex:/^[\pL\s\-]+$/u|max:25',
+            'name' => 'required|regex:/^[\pL\s\-]+$/u|min:3|max:25',
             'age' => 'required|numeric',
-            'role' => 'required|regex:/^[\pL\s\-]+$/u|max:25',
-            'batting' => 'required|regex:/^[\pL\s\-]+$/u|max:25',
-            'bowling' => 'required|regex:/^[\pL\s\-]+$/u|max:25',
+            'role' => 'required|regex:/^[\pL\s\-]+$/u|min:3|max:25',
+            'batting' => 'required|regex:/^[\pL\s\-]+$/u|min:3|max:25',
+            'bowling' => 'required|regex:/^[\pL\s\-]+$/u|min:3|max:25',
             'odi_runs' => 'required|numeric',
             'country_id' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg'
@@ -74,11 +105,11 @@ class PlayerController extends Controller
     {
         $validatedData = Validator::make($request->all(), [
             'id' => 'required',
-            'name' => 'required|regex:/^[\pL\s\-]+$/u|max:25',
+            'name' => 'required|regex:/^[\pL\s\-]+$/u|min:3|max:25',
             'age' => 'required|numeric',
-            'role' => 'required|regex:/^[\pL\s\-]+$/u|max:25',
-            'batting' => 'required|regex:/^[\pL\s\-]+$/u|max:25',
-            'bowling' => 'required|regex:/^[\pL\s\-]+$/u|max:25',
+            'role' => 'required|regex:/^[\pL\s\-]+$/u|min:3|max:25',
+            'batting' => 'required|regex:/^[\pL\s\-]+$/u|min:3|max:25',
+            'bowling' => 'required|regex:/^[\pL\s\-]+$/u|min:3|max:25',
             'odi_runs' => 'required|numeric',
             'country_id' => 'required',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg'
@@ -119,40 +150,6 @@ class PlayerController extends Controller
         return redirect('/players');
     }
 
-    public function search(Request $request)
-    {
-        //Getting all the values from the Player object
-        $query = Player::query();
-        //Getting all form values as key => value pair into an array.
-        $conditions = collect([]);
-        $conditions->push($request->only(['name', 'age', 'role', 'batting', 'bowling', 'odi_runs', 'country_id']));
-        //Checking all the fields are not null and search from the Player object according to the conditions
-        if ($conditions[0]["name"] != null) {
-            $query = $query->where('name', 'like', '%' . $conditions[0]["name"] . '%');
-        }
-        if ($conditions[0]["age"] != null) {
-            $query = $query->where('age', $conditions[0]["age"]);
-        }
-        if ($conditions[0]["role"] != null) {
-            $query = $query->where('role', $conditions[0]["role"]);
-        }
-        if ($conditions[0]["batting"] != null) {
-            $query = $query->where('batting', $conditions[0]["batting"]);
-        }
-        if ($conditions[0]["bowling"] != null) {
-            $query = $query->where('bowling', $conditions[0]["bowling"]);
-        }
-        if ($conditions[0]["odi_runs"] != null) {
-            $query = $query->where('odiRuns', $conditions[0]["odi_runs"]);
-        }
-        if ($conditions[0]["country_id"] != null) {
-            $query = $query->where('country_id', $conditions[0]["country_id"]);
-        }
-
-        $players = $query->get();
-        $countries = Country::all();
-        return view('player', compact('players', 'countries'));
-    }
 
     /**
      * Display the specified resource.

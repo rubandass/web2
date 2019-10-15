@@ -39,7 +39,7 @@ class CountryController extends Controller
     public function store(Request $request)
     {
         $validatedData = Validator::make($request->all(), [
-            'name' => 'required|regex:/^[\pL\s\-]+$/u|max:25|unique:countries,name',
+            'name' => 'required|regex:/^[\pL\s\-]+$/u|min:3|max:25|unique:countries,name',
             'flag' => 'required|image|mimes:jpeg,png,jpg,gif,svg'
         ]);
 
@@ -96,7 +96,7 @@ class CountryController extends Controller
     {
         $validatedData = Validator::make($request->all(), [
             'id' => 'required',
-            'name' => 'required|regex:/^[\pL\s\-]+$/u|max:25',
+            'name' => 'required|regex:/^[\pL\s\-]+$/u|min:3|max:25',
             'flag' => 'image|mimes:jpeg,png,jpg,gif,svg'
         ]);
 
