@@ -18,7 +18,7 @@
                         <div class="text-center">
                             <button type="button" data-id="{{$country->id}}" class="btn btn-sm btn-warning editCountry" data-name="{{$country->name}}" data-flag="{{$country->flag}}">Edit</button>
                             @if(sizeof($country->players)==0)
-                            <button data-id="{{$country->id}}" class="btn btn-sm btn-danger deleteCountry" data-id="{{$country->id}}" data-name="{{$country->name}}">Delete</button>
+                            <button class="btn btn-sm btn-danger deleteCountry" data-id="{{$country->id}}" data-name="{{$country->name}}">Delete</button>
                             @endif
                         </div>
                     </div>
@@ -34,7 +34,7 @@
     <div class="modal show" id="countryModal" tabindex="-1" role="dialog" aria-labelledby="countryModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form method="POST" action="/countries" enctype="multipart/form-data" id="countryForm" onsubmit="actionChange()">
+                <form method="POST" action="{{url('/countries')}}" enctype="multipart/form-data" id="countryForm">
                     {{csrf_field()}}
                     <div id="route">
                         {{method_field('PATCH')}}
@@ -53,10 +53,8 @@
                         </div>
                         <div class="form-group">
                             <label>Flag image</label><br />
-                            <img class="card-img-top" src="images_will_be_replaced_by_js" name="flagName" alt="" id="countryImage" style="width: 10rem; height: auto;">
+                            <img class="card-img-top" src="images_will_be_replaced_by_js" alt="" id="countryImage" style="width: 10rem; height: auto;">
                             <input type="file" class="form-control-file" name="flag" id="countryImageInputFile" />
-
-
                         </div>
                     </div>
                     <ul class="text-danger" id="errors"></ul>
@@ -73,7 +71,7 @@
     <div class="modal fade" id="countryDeleteModal" tabindex="-1" role="dialog" aria-labelledby="countryDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form method="POST" action="/countries" enctype="multipart/form-data" id="countryDeleteForm">
+                <form method="POST" action="{{url('/countries')}}" data-url="{{url('/countries')}}" enctype="multipart/form-data" id="countryDeleteForm">
                     {{csrf_field()}}
                     {{method_field('DELETE')}}
                     <div class="modal-header">

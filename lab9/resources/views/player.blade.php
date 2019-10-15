@@ -60,7 +60,7 @@
     <div class="modal fade" id="playerModal" tabindex="-1" role="dialog" aria-labelledby="playerModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <form method="POST" action="/players" enctype="multipart/form-data" id="playerForm">
+                <form method="POST" action="{{url('/players')}}" enctype="multipart/form-data" id="playerForm">
                     {{csrf_field()}}
 
                     <div id="route">
@@ -134,12 +134,12 @@
             </div>
         </div>
     </div>
-
+    
     <!-- Delete player modal dialog -->
     <div class="modal fade" id="playerDeleteModal" tabindex="-1" role="dialog" aria-labelledby="playerDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form method="POST" action="/players" enctype="multipart/form-data" id="playerDeleteForm">
+                <form method="POST" action="{{url('/players')}}"  data-url="{{url('/players')}}" enctype="multipart/form-data" id="playerDeleteForm">
                     {{csrf_field()}}
                     {{method_field('DELETE')}}
                     <div class="modal-header">
@@ -167,7 +167,7 @@
     <div class="modal fade" id="playerSearchModal" tabindex="-1" role="dialog" aria-labelledby="playerSearchModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <form method="GET" action="/players" id="playerSearchForm">
+                <form method="GET" action="{{url('/players')}}" id="playerSearchForm">
                     <div class="modal-header">
                         <h5 class="modal-title" id="playerSearchModalLabel">Search Player</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -192,27 +192,51 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-2">
                                 <label>Age</label>
                                 <input class="form-control  form-control-sm" type="text" name="age" />
                             </div>
-                            <div class="form-group  col-md-3">
+                            <div class="form-group col-md-4">
                                 <label>ODI Runs</label>
-                                <input class="form-control  form-control-sm" type="text" name="odi_runs" />
+                                <div class="row ml-1">
+                                    <input class="form-control form-control-sm col-md-5" type="text" name="min_odi_runs" />
+                                    <span class="ml-2 mr-2">to</span>
+                                    <input class="form-control form-control-sm col-md-5" type="text" name="max_odi_runs" />
+                                </div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label>Role</label>
-                                <input class="form-control  form-control-sm" type="text" name="role" />
+                                <select class="form-control form-control-sm" name="role">
+                                    <option selected value="">Select Role</option>
+                                    <!--  Looping around the players role-->
+                                    @foreach($roles as $role )
+                                        <option value="{{$role}}">{{$role}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group  col-md-6">
                                 <label>Batting</label>
-                                <input class="form-control  form-control-sm" type="text" name="batting" />
+                                <select class="form-control form-control-sm" name="batting">
+                                    <option selected value="">Select Batting</option>
+                                    <!--  Looping around the players batting style-->
+                                    @foreach($battingStyles as $battingStyle )
+                                        <option value="{{$battingStyle}}">{{$battingStyle}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="form-group col-md-6">
                                 <label>Bowling</label>
-                                <input class="form-control  form-control-sm" type="text" name="bowling" />
+                                <select class="form-control form-control-sm" name="bowling">
+                                    <option selected value="">Select Bowling</option>
+                                    <!--  Looping around the players bowling style-->
+                                    @foreach($bowlingStyles as $bowlingStyle)
+                                        @if(isset($bowlingStyle))
+                                            <option value="{{$bowlingStyle}}">{{$bowlingStyle}}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>

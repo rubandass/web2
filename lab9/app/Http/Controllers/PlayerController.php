@@ -20,7 +20,7 @@ class PlayerController extends Controller
         $query = Player::query();
         //Getting all form values as key => value pair into an array.
         $conditions = collect([]);
-        $conditions->push($request->only(['name', 'age', 'role', 'batting', 'bowling', 'odi_runs', 'country_id']));
+        $conditions->push($request->only(['name', 'age', 'role', 'batting', 'bowling', 'min_odi_runs', 'max_odi_runs', 'country_id']));
         //Checking all the fields are not null and search from the Player object according to the conditions
         //This check is for whether the $request contains values or not. (Search -> No values, players -> values)
         if (sizeof($conditions[0]) > 0) {
@@ -39,8 +39,15 @@ class PlayerController extends Controller
             if ($conditions[0]["bowling"] != null) {
                 $query = $query->where('bowling', $conditions[0]["bowling"]);
             }
-            if ($conditions[0]["odi_runs"] != null) {
-                $query = $query->where('odiRuns', $conditions[0]["odi_runs"]);
+            if ($conditions[0]["min_odi_runs"] != null || $conditions[0]["max_odi_runs"] != null) {
+                $min = (int) $conditions[0]["min_odi_runs"];
+                $max = (int) $conditions[0]["max_odi_runs"];
+                if ($max == 0) {
+                    $temp = $min;
+                    $min = $max;
+                    $max = $temp;
+                }
+                $query = $query->whereBetween('odiRuns', [$min, $max]);
             }
             if ($conditions[0]["country_id"] != null) {
                 $query = $query->where('country_id', $conditions[0]["country_id"]);
@@ -48,7 +55,10 @@ class PlayerController extends Controller
         }
         $players = $query->get()->sortBy('name');
         $countries = Country::all()->sortBy('name');
-        return view('player', compact('players', 'countries'));
+        $bowlingStyles = Player::distinct()->pluck('bowling')->sort();
+        $roles = Player::distinct()->pluck('role')->sort();
+        $battingStyles = Player::distinct()->pluck('batting')->sort();
+        return view('player', compact('players', 'countries','bowlingStyles','roles','battingStyles'));
     }
 
     /**
@@ -69,7 +79,7 @@ class PlayerController extends Controller
             'age' => 'required|numeric',
             'role' => 'required|regex:/^[\pL\s\-]+$/u|min:3|max:25',
             'batting' => 'required|regex:/^[\pL\s\-]+$/u|min:3|max:25',
-            'bowling' => 'required|regex:/^[\pL\s\-]+$/u|min:3|max:25',
+            'bowling' => 'nullable|regex:/^[\pL\s\-]+$/u',
             'odi_runs' => 'required|numeric',
             'country_id' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg'
@@ -109,7 +119,7 @@ class PlayerController extends Controller
             'age' => 'required|numeric',
             'role' => 'required|regex:/^[\pL\s\-]+$/u|min:3|max:25',
             'batting' => 'required|regex:/^[\pL\s\-]+$/u|min:3|max:25',
-            'bowling' => 'required|regex:/^[\pL\s\-]+$/u|min:3|max:25',
+            'bowling' => 'nullable|regex:/^[\pL\s\-]+$/u',
             'odi_runs' => 'required|numeric',
             'country_id' => 'required',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg'

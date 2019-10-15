@@ -9,10 +9,10 @@ $(document).ready(function () {
         //Set title for modal dialog
         $('#countryModalLabel').html('Add Country');
         //Clear image if it comes from edit dialog
-        $("img[name='flagName']").attr('src', '');
+        $("img[id='countryImage']").attr('src', '');
         $("#countryImage").hide();
         //Set the action values when submitting the form
-        $('#countryForm').prop('action', '/countries');
+        //$('#countryForm').prop('action', '/countries');
         //Hiding 'PATCH' method when submitting the form
         $('#route').hide();
         //Set the 'route' div to 'disabled'
@@ -25,8 +25,14 @@ $(document).ready(function () {
     $("form#countryForm").submit(function (e) {
         e.preventDefault();
         var formData = new FormData(this);
+		
+		var url = $(this).attr('action');
+		if($("#id").val() !== '')
+		{
+			url += '/' + $("#id").val();
+		}
         $.ajax({
-            url: $(this).attr('action'),
+            url: url,
             type: $(this).attr('method'),
             data: formData,
             success: function (data) {
@@ -50,9 +56,9 @@ $(document).ready(function () {
         $('#countryForm')[0].reset();
         $("#id").val($(this).data('id'));
         $("input[name='name']").val($(this).data('name'));
-        $("img[name='flagName']").attr('src', 'storage/' + $(this).data('flag'));
+        $("img[id='countryImage']").attr('src', 'storage/' + $(this).data('flag'));
 
-        $('#countryForm').prop('action', '/countries/' + $(this).data('id'));
+        //$('#countryForm').prop('action', $('#countryForm').prop('action') + '/' + $(this).data('id'));
         $("#errors").html("")
         $('#countryImage + img').remove();
         $("#countryImage").show();
@@ -76,7 +82,7 @@ $(document).ready(function () {
         $("#playerImage").attr('src', '');
         $("#playerImage").hide();
         //Set the action values when submitting the form
-        $('#playerForm').prop('action', '/players');
+        //$('#playerForm').prop('action', '/players');
         //Hiding 'PATCH' method when submitting the form
         $('#route').hide();
         //Set the 'route' div to 'disabled'
@@ -97,7 +103,7 @@ $(document).ready(function () {
         $("input[name='odi_runs']").val($(this).data('odi_runs'));
         $("select[name='country_id']").val($(this).data('country_id'));
         $("#playerImage").attr('src', 'storage/' + $(this).data('image'));
-        $('#playerForm').prop('action', '/players/' + $(this).data('id'));
+        //$('#playerForm').prop('action', '/players/' + $(this).data('id'));
         $("#errors").html("")
         $('#playerImage + img').remove();
         $("#playerImage").show();
@@ -112,8 +118,13 @@ $(document).ready(function () {
     $("form#playerForm").submit(function (e) {
       e.preventDefault();
       var formData = new FormData(this);
+	  var url = $(this).attr('action');
+		if($("#id").val() !== '')
+		{
+			url += '/' + $("#id").val();
+		}
       $.ajax({
-          url: $(this).attr('action'),
+          url: url,
           type: $(this).attr('method'),
           data: formData,
           success: function (data) {
@@ -137,13 +148,14 @@ $(document).ready(function () {
 
     $('.deletePlayer').click(function () {
         $("#spanPlayerName").text($(this).data('name'));
-        $('#playerDeleteForm').prop('action', '/players/' + $(this).data('id'));
+		$('#playerDeleteForm').prop('action', $('#playerDeleteForm').data('url') + '/' + $(this).data('id'));
+        //$('#playerDeleteForm').prop('action', '/players/' + $(this).data('id'));
         $("#playerDeleteModal").modal();
     });
 
     $('.deleteCountry').click(function () {
         $("#spanCountryName").text($(this).data('name'));
-        $('#countryDeleteForm').prop('action', '/countries/' + $(this).data('id'));
+		$('#countryDeleteForm').prop('action', $('#countryDeleteForm').data('url') + '/' + $(this).data('id'));
         $("#countryDeleteModal").modal();
     });
 
@@ -175,10 +187,4 @@ function readURL(input, image) {
         }
         reader.readAsDataURL(input.files[0]);
     }
-}
-
-function actionChange(){
-    var action_src = "{{url('/countries/')}}" + $(this).data('id');
-    $('#countryForm').action = action_src;
-    console.log('changed');
 }
