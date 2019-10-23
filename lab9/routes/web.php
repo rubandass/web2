@@ -22,4 +22,5 @@ Route::get('/country', 'PageController@country');*/
 Route::get('/', 'HomeController@home');
 Route::resource('/countries', 'CountryController');
 Route::resource('/players', 'PlayerController');
+Route::post('/deletePlayers', 'PlayerController@customDelete');
 

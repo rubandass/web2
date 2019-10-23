@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <title>Document</title>
     <style>
-        body
-        {
-            background-color: {{session('bgColor','white')}};
+        body{
+            background-color:{{session('bgColor','white')}};
         }
     </style>
+
 </head>
 
 <body>
@@ -37,8 +37,10 @@
             <button type="submit" class="btn btn-primary mb-2">Change the colors</button>
             </div>
         </form>
-
-        <p><a href="/data">Go to page2</a></p>
+        
+        <p><a href="/page2">Go to page2</a></p>
+        <p><a href="/page3">Go to page 3</a></p>
+        <p><a href="/exit">Exit</a></p>
     </div>
 </body>
 

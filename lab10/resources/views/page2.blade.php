@@ -12,13 +12,30 @@
         {
             background-color: {{session('bgColor','white')}};
         }
+
+        .triangle-up {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 100px solid {{session('shapeColor','')}};
+        }
     </style>
 </head>
 
 <body>
     <br>
     <br>
-    page2
+    <div class="container">
+        <h5>Hello '{{session('name')}}'</h5>
+        <p>Is the background-color still changed?</p>
+
+        <div class="triangle-up"></div>
+
+        <p><a href="/">Go back to page1</a></p>
+        <p><a href="/page3">Go to page 3</a></p>
+        <p><a href="/exit">Exit</a></p>
+    </div>
 </body>
 
 </html>

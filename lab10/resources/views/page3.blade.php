@@ -7,35 +7,35 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <title>Document</title>
-    body{
-        background-color:{{session('bgColor','white')}};
-    }
+    <style>
+        body{
+            background-color:{{session('bgColor','white')}};
+        }
+
+        .circle {
+        width: 100px;
+        height: 100px;
+        background: {{session('shapeColor','white')}};
+        border: 3px solid;
+        border-radius: 50%;
+        }
+    </style>
 </head>
 
 <body>
     <br>
     <br>
+    <br>
+    <br>
     <div class="container">
-        <form class="col-md-6" method="POST" action="/">
-            {{csrf_field()}}
-            <div class="form-group">
-                <label for="name">Your name</label>
-                <input type="text" class="form-control" id="name" placeholder="Enter your name">
-            </div>
-            <div class="form-group">
-                <label for="color">Enter background color name</label>
-                <input type="text" class="form-control" id="color" placeholder="Enter background color">
-            </div>
-            <div class="form-group">
-                <label for="shapeColor">Color for your shapes</label>
-                <input type="text" class="form-control" id="shapeColor" placeholder="Enter Color for your shapes">
-            </div>
-            <div>
-            <button type="submit" class="btn btn-primary mb-2">Change the colors</button>
-            </div>
-        </form>
+        <h5>Hello '{{session('name')}}'</h5>
+        <p>Is the background-color still changed?</p>
 
-        <a href="/data"></a>
+        <div class="circle"></div>
+
+        <p><a href="/">Go back to page1</a></p>
+        <p><a href="/page2">Go to page 2</a></p>
+        <p><a href="/exit">Exit</a></p>
     </div>
 </body>
 

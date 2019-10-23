@@ -19,3 +19,6 @@ use App\Http\Controllers\PageController;
 
 Route::get('/', 'PageController@index' );
 Route::post('/', 'PageController@data' );
+Route::get('/page2', 'PageController@dataPage2' );
+Route::get('/page3', 'PageController@dataPage3' );
+Route::get('/exit', 'PageController@exitPage' );

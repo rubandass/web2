@@ -113,6 +113,28 @@ $(document).ready(function () {
         $('#route :input').removeAttr('disabled');
         $("#playerModal").modal();
     });
+	
+	//Delete multiple palyers
+	$('#deletePlayers').click(function () {
+	$("#ids").val("");
+
+	var selectedPlayers = [];
+	$("input[name='players']:checked").each(function(){
+	selectedPlayers.push($(this).val());
+	});
+	if(selectedPlayers.length > 0 ){
+	$("#ids").val(selectedPlayers.join());
+	$("#message").html("Are you sure you want to delete the selected players: ?");
+	$("#cancel").html("Cancel");
+	$("#submit").show();
+        $("#deletePlayersModal").modal();
+	} else {
+	$("#message").html("No players selected.");
+	$("#cancel").html("Close");
+	$("#submit").hide();
+	$("#deletePlayersModal").modal();
+	}
+    });
 
     // Save player data using ajax
     $("form#playerForm").submit(function (e) {

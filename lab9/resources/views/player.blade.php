@@ -10,12 +10,16 @@
         <button type="button" class="btn btn-primary ml-3 mt-2 mb-1" id="searchPlayer">
             <span class="glyphicon glyphicon-search"></span> Search
         </button>
+	<button type="button" class="btn btn-danger ml-3 mt-2 mb-1" id="deletePlayers">
+            Delete
+        </button>
     </div>
+	<form method="POST" action="{{url('/players')}}" enctype="multipart/form-data" id="deleteForm">
     <div class="container-fluid col-md-12">
         <div class="row">
             <!-- Looping around the player and display as card-->
             @if(sizeof($players) == 0)
-                <p>Records not found</p>
+                <p class="mt-3 ml-3">No players matched the search criteria</p>
             @else
             @foreach($countries as $country)
                 @foreach($players as $player)
@@ -27,6 +31,8 @@
                                     <span>{{$player->country->name}}</span>
                                 </span>
                             </div>
+			     <input name="players" type="checkbox" value="{{$player->id}}" style="width: 25px; height: 25px; margin:5px; position: absolute;">	
+                                           
                             <img class="card-img-top" src="{{'storage/'.$player->image}}" alt="{{$player->name}}">
                             <div class="card-body">
                                 <h5 class="card-title text-center text-dark">{{$player->name}} ({{$player->age}})<br /></h5>
@@ -37,7 +43,7 @@
                                         <li class="list-group-item"><b>Bowling:</b> {{$player->bowling}}</li>
                                         <li class="list-group-item"><b>ODI Runs:</b> {{$player->odiRuns}}</li>
                                         <li class="list-group-item text-center">
-                                            <button type="button" class="btn btn-sm btn-warning editPlayer" data-id="{{$player->id}}" data-name="{{$player->name}}" data-age="{{$player->age}}" data-role="{{$player->role}}" data-batting="{{$player->batting}}" data-bowling="{{$player->bowling}}" data-image="{{$player->image}}" data-odi_runs="{{$player->odiRuns}}" data-country_id="{{$player->country->id}}">Edit
+					    <button type="button" class="btn btn-sm btn-warning editPlayer" data-id="{{$player->id}}" data-name="{{$player->name}}" data-age="{{$player->age}}" data-role="{{$player->role}}" data-batting="{{$player->batting}}" data-bowling="{{$player->bowling}}" data-image="{{$player->image}}" data-odi_runs="{{$player->odiRuns}}" data-country_id="{{$player->country->id}}">Edit
                                             </button>
                                             <button type="button" class="btn btn-sm btn-danger deletePlayer" data-id="{{$player->id}}" data-name="{{$player->name}}">Delete
                                             </button>
@@ -53,11 +59,12 @@
             @endif
         </div>
     </div>
+	</form>
 
 
     <!-- Add/Edit player modal dialog -->
 
-    <div class="modal fade" id="playerModal" tabindex="-1" role="dialog" aria-labelledby="playerModalLabel" aria-hidden="true">
+    <div class="modal fade" data-backdrop="static" id="playerModal" tabindex="-1" role="dialog" aria-labelledby="playerModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <form method="POST" action="{{url('/players')}}" enctype="multipart/form-data" id="playerForm">
@@ -136,7 +143,7 @@
     </div>
     
     <!-- Delete player modal dialog -->
-    <div class="modal fade" id="playerDeleteModal" tabindex="-1" role="dialog" aria-labelledby="playerDeleteModalLabel" aria-hidden="true">
+    <div class="modal fade" data-backdrop="static" id="playerDeleteModal" tabindex="-1" role="dialog" aria-labelledby="playerDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form method="POST" action="{{url('/players')}}"  data-url="{{url('/players')}}" enctype="multipart/form-data" id="playerDeleteForm">
@@ -161,10 +168,39 @@
             </div>
         </div>
     </div>
+	
+	
+	<!-- custom Delete players modal dialog -->
+    <div class="modal fade" data-keyboard="false" data-backdrop="static" id="deletePlayersModal" tabindex="-1" role="dialog" aria-labelledby="deletePlayersModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="POST" action="{{url('/deletePlayers')}}" enctype="multipart/form-data" id="deletePlayersForm">
+                    {{csrf_field()}}
+			<input type="hidden" name="ids" id="ids" value="" />
+                    
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deletePlayersModalLabel">Delete Player</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <h6 id="message">Are you sure you want to delete the selected players: ?</h6>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancel">Cancel</button>
+                        <button type="submit" name="submit" class="btn btn-primary" id="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- Search player modal dialog -->
 
-    <div class="modal fade" id="playerSearchModal" tabindex="-1" role="dialog" aria-labelledby="playerSearchModalLabel" aria-hidden="true">
+    <div class="modal fade" data-backdrop="static" id="playerSearchModal" tabindex="-1" role="dialog" aria-labelledby="playerSearchModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <form method="GET" action="{{url('/players')}}" id="playerSearchForm">
@@ -216,7 +252,7 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="form-group  col-md-6">
+                            <div class="form-group col-md-6">
                                 <label>Batting</label>
                                 <select class="form-control form-control-sm" name="batting">
                                     <option selected value="">Select Batting</option>
@@ -251,4 +287,7 @@
 
 
 </div>
+@endsection
+@section('scripts')
+<script src="{{asset('/js/player.js')}}"></script>
 @endsection

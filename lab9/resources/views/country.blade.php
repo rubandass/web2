@@ -31,7 +31,7 @@
     <!-- Add/Edit country modal dialog -->
 
 
-    <div class="modal show" id="countryModal" tabindex="-1" role="dialog" aria-labelledby="countryModalLabel" aria-hidden="true">
+    <div class="modal show" data-backdrop="static" id="countryModal" tabindex="-1" role="dialog" aria-labelledby="countryModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form method="POST" action="{{url('/countries')}}" enctype="multipart/form-data" id="countryForm">
@@ -68,7 +68,8 @@
     </div>
 
     <!-- Delete country modal dialog -->
-    <div class="modal fade" id="countryDeleteModal" tabindex="-1" role="dialog" aria-labelledby="countryDeleteModalLabel" aria-hidden="true">
+    
+    <div class="modal fade" data-backdrop="static" id="countryDeleteModal" tabindex="-1" role="dialog" aria-labelledby="countryDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form method="POST" action="{{url('/countries')}}" data-url="{{url('/countries')}}" enctype="multipart/form-data" id="countryDeleteForm">
@@ -95,4 +96,7 @@
     </div>
 </div>
 
+@endsection
+@section('scripts')
+<script src="{{asset('/js/country.js')}}"></script>
 @endsection
