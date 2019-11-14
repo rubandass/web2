@@ -59,8 +59,8 @@
                     <tr>
                         <td>{{$loop->iteration}}</td>
                         <td>{{$snack->item->name}}</td>
-                        <td>{{$snack->calories}}</td>
-                        <td>{{$snack->kj}}</td>
+                        <td>{{number_format($snack->calories, 2)}}</td>
+                        <td>{{number_format($snack->kj, 2)}}</td>
                         <td>{{$snack->date}}</td>
                     </tr>
                     @endforeach

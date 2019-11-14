@@ -13,7 +13,12 @@
 
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <!-- <script src="{{ asset('js/app.js') }}" defer></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="//momentjs.com/downloads/moment.min.js" def=""></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js" def=""></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -21,16 +26,15 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.2.7/fullcalendar.print.css" media="print" />
+    @yield('scripts')
 </head>
 
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-light bg-dark shadow-sm">
             <div class="container">
-                <a class="navbar-brand @yield('fitness')" href="{{ url('/') }}">
-                    Fitness
-                    <!-- {{ config('app.name', 'Fitness') }} -->
-                </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -39,33 +43,26 @@
                     @if (Auth::check())
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link @yield('home') text-white" href="/home">Home</a>
+                        </li>
                         <li class="nav-item dropdown">
                             <!-- <a class="nav-link dropdown-toggle @yield('workouts')" href="/workouts">Workouts</a> -->
-                            <a class="nav-link dropdown-toggle @yield('workouts')" href="/workouts" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle @yield('workouts') text-white" href="/workouts" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Workouts
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="/activity">Activity</a>
-                                <a class="dropdown-item" href="/alcohol">Alcohol</a>
-                                <a class="dropdown-item" href="/snack">Snack</a>
-                                <a class="dropdown-item" href="#">Sleep</a>
-                                <a class="dropdown-item" href="#">Mood</a>
-                                <a class="dropdown-item" href="#">Weight</a>
+                                <a class="dropdown-item" href="{{url('/activity')}}">Activity</a>
+                                <a class="dropdown-item" href="{{url('/alcohol')}}">Alcohol</a>
+                                <a class="dropdown-item" href="{{url('/snack')}}">Snack</a>
+                                <a class="dropdown-item" href="{{url('/sleep')}}">Sleep</a>
+                                <a class="dropdown-item" href="{{url('/mood')}}">Mood</a>
+                                <a class="dropdown-item" href="{{url('/weight')}}">Weight</a>
                             </div>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Dropdown
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                            </div>
-                        </li>
+
                         <li class="nav-item">
-                            <a class="nav-link @yield('results')" href="/results">Results</a>
+                            <a class="nav-link @yield('calendar') text-white" href="/calendar">Calendar</a>
                         </li>
                     </ul>
 
@@ -83,7 +80,7 @@
                         @endif
                         @else
                         <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            <a id="navbarDropdown" class="nav-link dropdown-toggle text-white" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                 {{ Auth::user()->name }} <span class="caret"></span>
                             </a>
 
@@ -101,8 +98,8 @@
                         @endguest
                     </ul>
                     @else
-                    <div>
-                        Please log in
+                    <div class="text-white" style="width: 50%; margin: 0 auto;">
+                        <h4 class="text-center">Fitness & Wellbeing</h4>
                     </div>
 
                     @endif
@@ -116,5 +113,5 @@
         </main>
     </div>
 </body>
-
+@yield('chartScript')
 </html>

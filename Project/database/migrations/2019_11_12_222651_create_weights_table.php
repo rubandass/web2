@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWeightTable extends Migration
+class CreateWeightsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateWeightTable extends Migration
      */
     public function up()
     {
-        Schema::create('weight', function (Blueprint $table) {
+        Schema::create('weights', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('week')->unsigned();
+            $table->date('date');
             $table->double('weight');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
@@ -29,6 +29,6 @@ class CreateWeightTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('weight');
+        Schema::dropIfExists('weights');
     }
 }

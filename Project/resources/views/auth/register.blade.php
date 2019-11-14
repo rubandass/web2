@@ -66,6 +66,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Register') }}
                                 </button>
+                                <label class="offset-md-1">   Already have an account?</label> <a href="/login"> Login</a>
                             </div>
                         </div>
                     </form>

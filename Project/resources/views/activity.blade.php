@@ -1,16 +1,16 @@
 @extends('layouts.app')
-@section('title','Fitness')
+@section('title','Workouts')
 @section('workouts','active')
 @section('content')
 <div class="container">
     <div class="row">
         <form class="col-md-4 mt-3" action="/workouts/storeAcitivy" method="post" enctype="multipart/form-data">
             {{csrf_field()}}
-            <div class="form-row">
+            <div class="form-group form-row">
                 <div class="form-group col-md-12">
-                    <label>Activity</label>
-                    <div class="input-group ml-1">
-                        <select class="form-control" name="activity">
+                    <label for="selectActivity">Activity</label>
+                    <div class="input-group">
+                        <select class="form-control" name="activity" id="selectActivity">
                             @foreach ($activities as $activity){
                             <option value="{{$activity->id}}">{{$activity->name}}</option>
                             @endforeach
@@ -27,16 +27,15 @@
                 <input type="text" class="form-control" name="distance" placeholder="Enter distance in km">
             </div>
 
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label>Start time</label>
-                    <input type="time" class="form-control" name="start_time" placeholder="Enter start time">
-                </div>
-                <div class="form-group col-md-6">
-                    <label>End time</label>
-                    <input type="time" class="form-control" name="end_time" placeholder="Enter end time">
+            <div class="form-group">
+                <label>Workout Time</label>
+                <div class="form-row">
+                    <input class="form-control col-md-5 ml-1" type="text" name="time_hr" placeholder="Hr" />
+                    <span class="ml-2 mr-2">:</span>
+                    <input class="form-control col-md-6" type="text" name="time_min" placeholder="Min" />
                 </div>
             </div>
+
             <div class="form-group">
                 <label>Workout date</label>
                 <input type="date" class="form-control" name="date">
@@ -53,28 +52,26 @@
                         <th>Sl.No</th>
                         <th>Activity</th>
                         <th>Distance</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>
+                        <th>Time</th>
                         <th>Date</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($workouts as $workout)
                     <tr>
-                        <td>{{$loop->iteration}}</td>
-                        <td>{{$workout->activity->name}}</td>
-                        <td>{{$workout->distance}}</td>
-                        <td>{{$workout->start_time}}</td>
-                        <td>{{$workout->end_time}}</td>
-                        <td>{{$workout->date}}</td>
+                        <td class="text-center">{{$loop->iteration}}</td>
+                        <td class="text-center">{{$workout->activity->name}}</td>
+                        <td class="text-center">{{$workout->distance}}</td>
+                        <td class="text-center">{{(int)($workout->time/60)}} Hr {{(int)($workout->time%60)}} mins</td>
+                        <td class="text-center">{{$workout->date}}</td>
                     </tr>
                     @endforeach
                 </tbody>
                 <tfoot>
                     <tr>
                         <td colspan="2" class="text-center"><b>Total</b></td>
-                        <td><b>{{$totalWorkoutDistance}} km</b></td>
-                        <td colspan="2" class="text-center"><b>{{$totalWorkoutTime}} Hrs</b></td>
+                        <td class="text-center"><b>{{$totalWorkoutDistance}} km</b></td>
+                        <td class="text-center"><b>{{(int)($totalTimeInMin/60)}} Hr {{(int)($totalTimeInMin%60)}} mins</b></td>
                     </tr>
                 </tfoot>
             </table>
@@ -97,7 +94,12 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Name</label>
-                        <input type="text" class="form-control" name="activityName" placeholder="Enter Activity name">
+                        <input type="text" class="form-control" name="activityName" placeholder="Enter activity name">
+                    </div>
+                    <div class="form-group ">
+                    
+                            <label>Activity color</label>
+                            <input type="color" class="ml-2" style="width30px; height:30px" name="activityColor" placeholder="Choose activity color">
                     </div>
                 </div>
                 <div class="modal-footer">

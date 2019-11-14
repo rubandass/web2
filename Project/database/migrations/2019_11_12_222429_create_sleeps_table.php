@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSleepTable extends Migration
+class CreateSleepsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateSleepTable extends Migration
      */
     public function up()
     {
-        Schema::create('sleep', function (Blueprint $table) {
+        Schema::create('sleeps', function (Blueprint $table) {
             $table->increments('id');
             $table->date('date');
-            $table->time('time');
+            $table->double('time');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
         });
@@ -29,6 +29,6 @@ class CreateSleepTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sleep');
+        Schema::dropIfExists('sleeps');
     }
 }

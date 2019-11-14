@@ -8,8 +8,11 @@ use App\Alcohol;
 use App\Workout;
 use App\Item;
 use App\Snack;
+use App\Sleep;
+use App\Mood;
 use App\User;
-use Carbon\Carbon;
+use App\Weight;
+use MaddHatter\LaravelFullcalendar\Facades\Calendar;
 use Illuminate\Support\Facades\Auth;
 
 class FormController extends Controller
@@ -21,20 +24,23 @@ class FormController extends Controller
 
     public function storeAcitivy(Request $request)
     {
-        
+
         $workout = new Workout();
         $workout->distance = $request->get('distance');
-        $workout->start_time = $request->get('start_time');
-        $workout->end_time = $request->get('end_time');
         $workout->date = $request->get('date');
         $workout->activity_id = $request->get('activity');
+
+        $time_hr = $request->get('time_hr') * 60;
+        $time_min = $request->get('time_min');
+        $workout->time = $time_hr + $time_min;
+
         $workout->save();
         return redirect('/activity')->with('success', 'Activity has been added');
     }
 
     public function storeAlcohol(Request $request)
     {
-        
+
         $alcohol = new Alcohol();
         $alcohol->standard_drink = $request->get('drink_number');
         //kJ = calories * 4.184;
@@ -45,7 +51,7 @@ class FormController extends Controller
             $kj = $request->get('calorie') * 4.184;
             $calories = $request->get('calorie');
         }
-        
+
         $alcohol->calories = $calories;
         $alcohol->kj = $kj;
         $alcohol->date = $request->get('date');
@@ -65,7 +71,7 @@ class FormController extends Controller
             $kj = $request->get('calorie') * 4.184;
             $calories = $request->get('calorie');
         }
-        
+
         $snack->calories = $calories;
         $snack->kj = $kj;
         $snack->date = $request->get('date');
@@ -74,32 +80,41 @@ class FormController extends Controller
         return redirect('/snack')->with('success', 'Snack details has been added');
     }
 
-    public function result()
+    public function storeSleep(Request $request)
     {
-        $workouts = Workout::all()->sortBy('date');
-        $totalWorkoutDistance = Workout::sum('distance');
-        $totalWorkoutTime = 0;
-        //$totalWorkoutTime = Workout::get('start_time');
-        $start_time = Workout::get('start_time');
-        for ($i=0; $i < sizeof($start_time); $i++) { 
-            $jsonArrayStartTime = json_decode($start_time);
-            $starttime = $jsonArrayStartTime[$i]->start_time;
-            $end_time = Workout::get('end_time');
-            $jsonArrayEndTime = json_decode($end_time);
-            $endtime = $jsonArrayEndTime[$i]->end_time;
-            $startTime = strtotime($starttime);
-            $endTime = strtotime($endtime);
-            $diffTime = $endTime - $startTime;
-            $totalWorkoutTime += $diffTime / 60 / 60;
-        }
-        
-        return view('results', compact('workouts', 'totalWorkoutDistance', 'totalWorkoutTime'));
+        $sleep = new Sleep();
+        $sleep->date = $request->get('date');
+        $sleep->time = $request->get('sleep_hours');
+        $sleep->user_id = Auth::user()->id;
+        $sleep->save();
+        return redirect('/sleep')->with('success', 'Activity has been added');
+    }
+
+    public function storeMood(Request $request)
+    {
+        $mood = new Mood();
+        $mood->date = $request->get('date');
+        $mood->mood = $request->get('mood');
+        $mood->user_id = Auth::user()->id;
+        $mood->save();
+        return redirect('/mood')->with('success', 'Activity has been added');
+    }
+
+    public function storeWeight(Request $request)
+    {
+        $weight = new Weight();
+        $weight->date = $request->get('date');
+        $weight->weight = $request->get('weight');
+        $weight->user_id = Auth::user()->id;
+        $weight->save();
+        return redirect('/weight')->with('success', 'Activity has been added');
     }
 
     public function addActivity(Request $request)
     {
         $activity = new Activity();
         $activity->name = $request->get('activityName');
+        $activity->color = $request->get('activityColor');
         $activity->user_id = Auth::user()->id;
         $activity->save();
         return redirect('activity');
@@ -109,13 +124,12 @@ class FormController extends Controller
     {
         $item = new Item();
         $item->name = $request->get('item_name');
-        //dd($request->get('item'));
         if ($request->get('item') == "alcohol") {
             $item->category = "alcohol";
         } else {
             $item->category = "snack";
         }
-        
+
         $item->user_id = Auth::user()->id;
         $item->save();
         if ($request->get('item') == "alcohol") {
@@ -123,7 +137,6 @@ class FormController extends Controller
         } else {
             return redirect('snack');
         }
-        
     }
 
     public function workout()
@@ -138,40 +151,72 @@ class FormController extends Controller
         $activities = Activity::all()->sortBy('name');
         $workouts = Workout::all()->sortBy('date');
         $totalWorkoutDistance = Workout::sum('distance');
-        $totalWorkoutTime = 0;
-        //$totalWorkoutTime = Workout::get('start_time');
-        $start_time = Workout::get('start_time');
-        for ($i=0; $i < sizeof($start_time); $i++) { 
-            $jsonArrayStartTime = json_decode($start_time);
-            $starttime = $jsonArrayStartTime[$i]->start_time;
-            $end_time = Workout::get('end_time');
-            $jsonArrayEndTime = json_decode($end_time);
-            $endtime = $jsonArrayEndTime[$i]->end_time;
-            $startTime = strtotime($starttime);
-            $endTime = strtotime($endtime);
-            $diffTime = $endTime - $startTime;
-            $totalWorkoutTime += $diffTime / 60 / 60;
-        }
-        return view('activity', compact('activities','workouts', 'totalWorkoutDistance', 'totalWorkoutTime'));
+
+        $totalTimeInMin = Workout::sum('time');
+        $totalTimeInHr = $totalTimeInMin / 60;
+        return view('activity', compact('activities', 'workouts', 'totalTimeInMin', 'totalWorkoutDistance'));
     }
 
     public function alcoholEntry()
     {
         $alcohols = Alcohol::all();
         $items = Item::where('category', 'alcohol')->get()->sortBy('name');
-        return view('alcohol', compact('alcohols','items'));
+        return view('alcohol', compact('alcohols', 'items'));
     }
 
     public function snackEntry()
     {
         $snacks = Snack::all();
         $items = Item::where('category', 'snack')->get()->sortBy('name');
-        return view('snack', compact('snacks','items'));
+        return view('snack', compact('snacks', 'items'));
     }
 
     public function itemEntry()
     {
         $items = Item::all()->sortBy('name');
         return view('alcohol', compact('items'));
+    }
+
+    public function sleepEntry()
+    {
+        $sleeps = Sleep::all()->sortBy('date');
+        $totalSleepHours = Sleep::sum('time');
+        return view('sleep', compact('sleeps', 'totalSleepHours'));
+    }
+
+    public function moodEntry()
+    {
+        $moods = Mood::all()->sortBy('date');
+        return view('mood', compact('moods'));
+    }
+
+    public function weightEntry()
+    {
+        $weights = Weight::all()->sortBy('date');
+        return view('weight', compact('weights'));
+    }
+
+    public function calendar()
+    {
+        $events = [];
+        $workouts = Workout::all();
+        if ($workouts->count()) {
+            foreach ($workouts as $workout) {
+                $events[] = Calendar::event(
+                    $workout->activity->name . " " . $workout->time . " " . "mins",
+                    true,
+                    new \DateTime($workout->date),
+                    null,
+                    null,
+                    //add color
+                    [
+                        'color' => $workout->activity->color,
+                        'textColor' => 'white'
+                    ]
+                );
+            }
+        }
+        $calendar = Calendar::addEvents($events);
+        return view('calendar', compact('calendar'));
     }
 }

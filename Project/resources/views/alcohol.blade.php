@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Fitness')
+@section('title','Activity')
 @section('workouts','active')
 @section('content')
 <div class="container">
@@ -68,8 +68,8 @@
                         <td>{{$loop->iteration}}</td>
                         <td>{{$alcohol->item->name}}</td>
                         <td>{{$alcohol->standard_drink}}</td>
-                        <td>{{$alcohol->calories}}</td>
-                        <td>{{$alcohol->kj}}</td>
+                        <td>{{number_format($alcohol->calories, 2)}}</td>
+                        <td>{{number_format($alcohol->kj, 2)}}</td>
                         <td>{{$alcohol->date}}</td>
                     </tr>
                     @endforeach

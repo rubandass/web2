@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Workout extends Model
 {
-    protected $fillable = ['distance','start_time','end_time','date'];
+    protected $fillable = ['distance','start_time','end_time', 'time','date'];
     public $timestamps = false;
     public function activity()
     {
