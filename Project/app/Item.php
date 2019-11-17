@@ -17,4 +17,9 @@ class Item extends Model
     {
         return $this->hasMany('App\Alcohol');
     }
+
+    public function snacks()
+    {
+        return $this->hasMany('App\Snack');
+    }
 }

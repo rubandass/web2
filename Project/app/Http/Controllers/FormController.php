@@ -14,6 +14,7 @@ use App\User;
 use App\Weight;
 use MaddHatter\LaravelFullcalendar\Facades\Calendar;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class FormController extends Controller
 {
@@ -24,7 +25,6 @@ class FormController extends Controller
 
     public function storeAcitivy(Request $request)
     {
-
         $workout = new Workout();
         $workout->distance = $request->get('distance');
         $workout->date = $request->get('date');
@@ -40,18 +40,17 @@ class FormController extends Controller
 
     public function storeAlcohol(Request $request)
     {
-
         $alcohol = new Alcohol();
         $alcohol->standard_drink = $request->get('drink_number');
         //kJ = calories * 4.184;
-        if ($request->get('calorie') == null) {
-            $calories = $request->get('kj') / 4.184;
-            $kj = $request->get('kj');
+
+        if ($request->get('calorie_type') == "kj") {
+            $calories = $request->get('calorie') / 4.184;
+            $kj = $request->get('calorie');
         } else {
             $kj = $request->get('calorie') * 4.184;
             $calories = $request->get('calorie');
         }
-
         $alcohol->calories = $calories;
         $alcohol->kj = $kj;
         $alcohol->date = $request->get('date');
@@ -64,9 +63,9 @@ class FormController extends Controller
     {
         $snack = new Snack();
         //kJ = calories * 4.184;
-        if ($request->get('calorie') == null) {
-            $calories = $request->get('kj') / 4.184;
-            $kj = $request->get('kj');
+        if ($request->get('calorie_type') == "kj") {
+            $calories = $request->get('calorie') / 4.184;
+            $kj = $request->get('calorie');
         } else {
             $kj = $request->get('calorie') * 4.184;
             $calories = $request->get('calorie');
@@ -120,10 +119,120 @@ class FormController extends Controller
         return redirect('activity');
     }
 
+    public function updateActivity(Request $request)
+    {
+        $activity = Activity::find($request->get('activity_id'));
+        $activity->name = $request->get('activity_name');
+        $activity->color = $request->get('activity_color');
+        $activity->user_id = Auth::user()->id;
+        $activity->save();
+        return redirect('activity');
+    }
+
+    public function deleteActivity(Request $request)
+    {
+        $activity = Activity::find($request->get('activity_id'));
+        $activity->user_id = Auth::user()->id;
+        $activity->delete();
+        return redirect('activity');
+    }
+
+    public function checkActivities(Request $request)
+    {
+        $workoutData = Workout::where('activity_id', '=', (int) $request->get('id'))->get();
+        if (sizeof($workoutData) > 0) {
+            return response()->json([
+                'result' => 'Found'
+            ]);
+        } else {
+            return response()->json([
+                'result' => 'NotFound'
+            ]);
+        }
+    }
+
+    public function updateItem(Request $request)
+    {
+        $item = Item::find($request->get('item_id'));
+        $item->name = $request->get('item_name');
+        $item->user_id = Auth::user()->id;
+        if ($request->get('item') == "alcohol") {
+            $item->category = "alcohol";
+        } else {
+            $item->category = "snack";
+        }
+
+        $item->save();
+
+        if ($request->get('item') == "alcohol") {
+            return redirect('alcohol');
+        } else {
+            return redirect('snack');
+        }
+    }
+
+    public function deleteItem(Request $request)
+    {
+        $item = Item::find($request->get('item_id'));
+        $item->user_id = Auth::user()->id;
+        if ($request->get('item') == "alcohol") {
+            $item->category = "alcohol";
+        } else {
+            $item->category = "snack";
+        }
+
+        $item->delete();
+
+        if ($request->get('item') == "alcohol") {
+            return redirect('alcohol');
+        } else {
+            return redirect('snack');
+        }
+    }
+
+    public function checkItems(Request $request)
+    {
+        $alcoholData = Alcohol::where('item_id', '=', (int) $request->get('id'))->get();
+        $snackData = Snack::where('item_id', '=', (int) $request->get('id'))->get();
+
+
+        if ($request->get('item') == "alcohol") {
+            if (sizeof($alcoholData) > 0) {
+                return response()->json([
+                    'result' => 'Found'
+                ]);
+            } else {
+                return response()->json([
+                    'result' => 'NotFound'
+                ]);
+            }
+        } else {
+            if (sizeof($snackData) > 0) {
+                return response()->json([
+                    'result' => 'Found'
+                ]);
+            } else {
+                return response()->json([
+                    'result' => 'NotFound'
+                ]);
+            }
+        }
+    }
+
+    public function getColor(Request $request)
+    {
+        $activity = Activity::find($request->get('activityId'));
+        $activity->name = $request->get('activityName');
+        $activity->color = $request->get('activityColor');
+        $activity->user_id = Auth::user()->id;
+        $activity->save();
+        return redirect('activity');
+    }
+
     public function addItem(Request $request)
     {
         $item = new Item();
-        $item->name = $request->get('item_name');
+        $item->name = $request->get('add_item_name');
         if ($request->get('item') == "alcohol") {
             $item->category = "alcohol";
         } else {
@@ -139,14 +248,7 @@ class FormController extends Controller
         }
     }
 
-    public function workout()
-    {
-        $activities = Activity::all()->sortBy('name');
-        //dd($activities);
-        return view('workoutentry', compact('activities'));
-    }
-
-    public function activityEntry()
+   /* public function activityEntry()
     {
         $activities = Activity::all()->sortBy('name');
         $workouts = Workout::all()->sortBy('date');
@@ -155,20 +257,53 @@ class FormController extends Controller
         $totalTimeInMin = Workout::sum('time');
         $totalTimeInHr = $totalTimeInMin / 60;
         return view('activity', compact('activities', 'workouts', 'totalTimeInMin', 'totalWorkoutDistance'));
+    }*/
+
+    /*public function alcoholEntry()
+    {
+        $alcohols = Alcohol::all();
+        $items = Item::where('category', 'alcohol')->get()->sortBy('name');
+        $totalCalories = Alcohol::sum('calories');
+        $totalKj = Alcohol::sum('kj');
+        $user = auth()->user();
+
+        return view('alcohol', compact('alcohols', 'items', 'totalCalories', 'totalKj'));
+    }*/
+
+   /* public function snackEntry()
+    {
+        $snacks = Snack::all();
+        $items = Item::where('category', 'snack')->get()->sortBy('name');
+        $totalCalories = Snack::sum('calories');
+        $totalKj = Snack::sum('kj');
+        return view('snack', compact('snacks', 'items', 'totalCalories', 'totalKj'));
+    }*/
+
+    public function activityEntry()
+    {
+        $activities = Activity::where('user_id', auth()->id())->get()->sortBy('name');
+        $workouts = DB::table('workouts')->join('activities','workouts.activity_id', '=', 'activities.id')->join('users', 'activities.user_id', '=', 'users.id')->where('users.id', auth()->id())->get()->sortBy('date');
+        $totalWorkoutDistance = DB::table('workouts')->join('activities','workouts.activity_id', '=', 'activities.id')->join('users', 'activities.user_id', '=', 'users.id')->where('users.id', auth()->id())->sum('distance');
+
+        $totalTimeInMin = DB::table('workouts')->join('activities','workouts.activity_id', '=', 'activities.id')->join('users', 'activities.user_id', '=', 'users.id')->where('users.id', auth()->id())->sum('time');
+        $totalTimeInHr = $totalTimeInMin / 60;
+        return view('activity', compact('activities', 'workouts', 'totalTimeInMin', 'totalWorkoutDistance'));
     }
 
     public function alcoholEntry()
     {
-        $alcohols = Alcohol::all();
-        $items = Item::where('category', 'alcohol')->get()->sortBy('name');
-        return view('alcohol', compact('alcohols', 'items'));
+        $items = Item::where('category', 'alcohol')->where('user_id', auth()->id())->get()->sortBy('name');
+        $totalCalories = DB::table('alcohols')->join('items','alcohols.item_id', '=', 'items.id')->join('users', 'items.user_id', '=', 'users.id')->where('users.id', auth()->id())->sum('calories');
+        $totalKj = DB::table('alcohols')->join('items','alcohols.item_id', '=', 'items.id')->join('users', 'items.user_id', '=', 'users.id')->where('users.id', auth()->id())->sum('kj');
+        return view('alcohol', compact('items', 'totalCalories', 'totalKj'));
     }
 
     public function snackEntry()
     {
-        $snacks = Snack::all();
-        $items = Item::where('category', 'snack')->get()->sortBy('name');
-        return view('snack', compact('snacks', 'items'));
+        $items = Item::where('category', 'snack')->where('user_id', auth()->id())->get()->sortBy('name');
+        $totalCalories = DB::table('snacks')->join('items','snacks.item_id', '=', 'items.id')->join('users', 'items.user_id', '=', 'users.id')->where('users.id', auth()->id())->sum('calories');
+        $totalKj = DB::table('snacks')->join('items','snacks.item_id', '=', 'items.id')->join('users', 'items.user_id', '=', 'users.id')->where('users.id', auth()->id())->sum('kj');
+        return view('snack', compact('items', 'totalCalories', 'totalKj'));
     }
 
     public function itemEntry()
@@ -179,38 +314,40 @@ class FormController extends Controller
 
     public function sleepEntry()
     {
-        $sleeps = Sleep::all()->sortBy('date');
-        $totalSleepHours = Sleep::sum('time');
-        return view('sleep', compact('sleeps', 'totalSleepHours'));
+        $sleeps = Sleep::where('user_id', auth()->id())->get()->sortBy('date');
+        $avgSleepHours = Sleep::where('user_id', auth()->id())->avg('time');
+        return view('sleep', compact('sleeps', 'avgSleepHours'));
     }
 
     public function moodEntry()
     {
-        $moods = Mood::all()->sortBy('date');
+        $moods = Mood::where('user_id', auth()->id())->get()->sortBy('date');
         return view('mood', compact('moods'));
     }
 
     public function weightEntry()
     {
-        $weights = Weight::all()->sortBy('date');
+        $weights = Weight::where('user_id', auth()->id())->get()->sortBy('date');
         return view('weight', compact('weights'));
     }
 
     public function calendar()
     {
         $events = [];
-        $workouts = Workout::all();
+
+        $workouts = DB::table('users')->join('activities', 'users.id', '=', 'activities.user_id')->join('workouts', 'activities.id', '=', 'workouts.activity_id')->selectRaw('workouts.time as time, activities.name, workouts.date,activities.color')->where('user_id', auth()->id())->get();
+
         if ($workouts->count()) {
             foreach ($workouts as $workout) {
                 $events[] = Calendar::event(
-                    $workout->activity->name . " " . $workout->time . " " . "mins",
+                    $workout->name . " " . $workout->time . " " . "mins",
                     true,
                     new \DateTime($workout->date),
                     null,
                     null,
                     //add color
                     [
-                        'color' => $workout->activity->color,
+                        'color' => $workout->color,
                         'textColor' => 'white'
                     ]
                 );
@@ -218,5 +355,11 @@ class FormController extends Controller
         }
         $calendar = Calendar::addEvents($events);
         return view('calendar', compact('calendar'));
+    }
+
+    public function statistics()
+    {
+        $longestWorkout = Workout::max('time');
+        dd($longestWorkout);
     }
 }

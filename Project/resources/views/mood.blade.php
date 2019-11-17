@@ -4,7 +4,7 @@
 @section('content')
 <div class="container">
     <div class="row">
-        <form class="col-md-4 mt-1" action="/workouts/storeMood" method="post" enctype="multipart/form-data">
+        <form class="col-md-4 mt-1" action="{{url('/workouts/storeMood')}}" method="post" enctype="multipart/form-data">
             {{csrf_field()}}
             <h5>Enter Mood details</h5>
             <div class="form-group">

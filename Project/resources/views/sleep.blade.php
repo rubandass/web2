@@ -4,7 +4,7 @@
 @section('content')
 <div class="container">
     <div class="row">
-        <form class="col-md-4 mt-1" action="/workouts/storeSleep" method="post" enctype="multipart/form-data">
+        <form class="col-md-4 mt-1" action="{{url('/workouts/storeSleep')}}" method="post" enctype="multipart/form-data">
             {{csrf_field()}}
             <h5>Enter Sleep hours</h5>
             <div class="form-group">
@@ -42,8 +42,8 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="2" class="text-center"><b>Total</b></td>
-                        <td><b>{{$totalSleepHours}} Hrs</b></td>
+                        <td colspan="2" class="text-center"><b>Average Sleep Hours</b></td>
+                        <td><b>{{number_format($avgSleepHours, 2)}} Hrs</b></td>
                     </tr>
                 </tfoot>
             </table>
